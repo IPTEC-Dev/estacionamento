@@ -1,0 +1,11 @@
+--2021-11-18 13:54:17--  https://powerusers.microsoft.com/t5/image/serverpage/image-id/118082i204C32E01666789C/image-size/large?v=v2
+Resolving powerusers.microsoft.com (powerusers.microsoft.com)... 23.4.75.17, 2600:1419:b400:19f::16e8, 2600:1419:b400:186::16e8
+Connecting to powerusers.microsoft.com (powerusers.microsoft.com)|23.4.75.17|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 60886 (59K) [image/gif]
+Saving to: ‘large?v=v2’
+
+large?v=v2                   0%[                                      ]       0  --.-KB/s               large?v=v2                 100%[=====================================>]  59,46K  --.-KB/s    in 0,09s   
+
+2021-11-18 13:54:21 (644 KB/s) - ‘large?v=v2’ saved [60886/60886]
+
