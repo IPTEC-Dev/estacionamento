@@ -106,14 +106,8 @@ module.exports = app => {
       const socioNaTolerancia =
         new Date(Date.parse(response.habil_mens) + toleranciaBloqueio) >
         Date.parse(new Date());
-
       const socioLicenciado = ["04", "08"].includes(response.situacao);
 
-      console.log("socio.situacao:", response.situacao);
-      console.log("socioLicenciado:", socioLicenciado);
-      console.log("socioNaTolerancia:", socioNaTolerancia);
-      console.log("toleranciaBloqueio:", toleranciaBloqueio);
-      console.log("socioNaTolerancia || socioLicenciado:", socioNaTolerancia || socioLicenciado);
 
       const dependentes = await app
         .omni("omniclub.caddep")
