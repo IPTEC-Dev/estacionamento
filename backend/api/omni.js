@@ -1,6 +1,8 @@
 module.exports = app => {
   const { existsOrError } = app.api.validation;
 
+  const toleranciaBloqueio = 259200000;
+
   const getRegistrationByPlate = async (req, res) => {
     const data = { ...req.params };
     try {
@@ -80,6 +82,7 @@ module.exports = app => {
         .omni("omniclub.cadsocio")
         .select(
           "habil_mens",
+          "situacao",
           app.omni.raw(
             "regexp_replace(nome, '[^a-zA-Z0-9 ]+', '', 'g') as nome"
           )
@@ -100,6 +103,12 @@ module.exports = app => {
       }
       existsOrError(response, "Matrícula não encontrada");
 
+      const socioNaTolerancia =
+        new Date(Date.parse(response.habil_mens) + toleranciaBloqueio) >
+        Date.parse(new Date());
+
+      const socioLicenciado = ["04", "08"].includes(response.situacao);
+
       const dependentes = await app
         .omni("omniclub.caddep")
         .select(
@@ -118,20 +127,14 @@ module.exports = app => {
         dependente.matricula_completa = `${data.registration}-${
           dependente.cod_dep
           }`;
-        if (
-          new Date(Date.parse(dependente.habil_mens) + 259200000) >
-          Date.parse(new Date())
-        ) {
+        if (socioNaTolerancia || socioLicenciado) {
           dependente.valido = true;
         } else {
           dependente.valido = false;
         }
       });
 
-      if (
-        new Date(Date.parse(response.habil_mens) + 259200000) >
-        Date.parse(new Date())
-      ) {
+      if (socioNaTolerancia || socioLicenciado) {
         const condition =
           data.event === "entrada"
             ? { "fluxos.placa": data.plate }
@@ -222,10 +225,7 @@ module.exports = app => {
           .first();
       }
       // existsOrError(response, 'Matrícula não encontrada.')
-      if (
-        new Date(Date.parse(response.habil_mens) + 259200000) >
-        Date.parse(new Date())
-      ) {
+      if (socioNaTolerancia || socioLicenciado) {
         return res.json({
           ...response,
           profilePicture: `http://sccp14/${registration + code}.jpg`
