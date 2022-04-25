@@ -435,7 +435,6 @@
 import GlobalEvents from 'vue-global-events'
 import SegundaVia from '@/components/inicio/SegundaVia'
 import { mapGetters } from 'vuex'
-
 export default {
   name: 'MovimentacaoManual',
   components: { SegundaVia, GlobalEvents },
@@ -500,14 +499,11 @@ export default {
   },
   created() {
     const self = this
-
     this.loadLastCashbox()
     this.loadPrices()
-
     document.addEventListener('message', function(data) {
       const result = data.data
       const formatedData = `!${result}*`
-
       for (let index = 0; index < formatedData.length; index++) {
         self.readRegistration({ key: formatedData[index] })
       }
@@ -552,7 +548,6 @@ export default {
             this.charactersFromReader = []
           }
         }
-
         if (
           event.key !== 'Shift' &&
           event.key !== 'Enter' &&
@@ -562,7 +557,6 @@ export default {
             key: event.key
           })
         }
-
         if (event.key === '*') {
           this.formatCharactersFromReader()
         }
@@ -575,9 +569,7 @@ export default {
           formatedRegistration += this.charactersFromReader[index].key
         }
       }
-
       formatedRegistration = formatedRegistration.replace('undefined', '')
-
       if (formatedRegistration.length > 8) {
         formatedRegistration = formatedRegistration.substring(
           formatedRegistration.length - 8,
@@ -589,7 +581,6 @@ export default {
           formatedRegistration.length
         )
       }
-
       if (this.step === 2 && this.evento.evento === 'Entrada') {
         this.evento.matricula = formatedRegistration
         this.bicicleta = !this.bicicleta
@@ -907,7 +898,6 @@ export default {
                                 ...this.evento,
                                 precos: { ...this.precos }
                               })
-
                               if (this.pagoNaEntrada) {
                               setTimeout(() => {
                                 window.sendToElectron({
@@ -1006,7 +996,6 @@ export default {
                             ...this.evento,
                             precos: { ...this.precos }
                           })
-
                           if (this.pagoNaEntrada) {
                             setTimeout(() => {
                               window.sendToElectron({
@@ -1140,7 +1129,6 @@ export default {
                           ...this.evento,
                           precos: { ...this.precos }
                         })
-
                         if (this.pagoNaEntrada) {
                           setTimeout(() => {
                             window.sendToElectron({
@@ -1241,7 +1229,6 @@ export default {
                       ...this.evento,
                       precos: { ...this.precos }
                     })
-
                     if (this.pagoNaEntrada) {
                       setTimeout(() => {
                         window.sendToElectron({
@@ -1623,10 +1610,8 @@ export default {
             }
             if (this.evento.matricula) {
               var element = document.getElementById("loading_area");
-
               element.classList.remove("deactive");
               element.classList.add("active");
-
               this.requestingToApi = true
               this.$api
                 .post('omni', {
@@ -1637,10 +1622,8 @@ export default {
                 })
                 .then(res => {
                   var element = document.getElementById("loading_area");
-
                   element.classList.remove("active");
                   element.classList.add("deactive");
-
                   this.evento.nome = res.data.nome
                   this.evento.tipo = 'Sócio'
                   this.evento.identry = res.data.identry
@@ -1678,6 +1661,9 @@ export default {
                     text: err.response.data,
                     color: 'error'
                   })
+                  var element = document.getElementById("loading_area");
+                  element.classList.remove("active");
+                  element.classList.add("deactive");
                 })
             } else {
               this.requestingToApi = true
@@ -1855,12 +1841,9 @@ export default {
   top: -24px;
   position: relative;
 }
-
 #loading_area.deactive {
   display: none;
 }
-
-
 #loading_area.active{
     position: absolute;
     top: 0;
