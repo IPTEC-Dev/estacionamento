@@ -133,14 +133,14 @@ module.exports = app => {
         dependente.matricula_completa = `${data.registration}-${
           dependente.cod_dep
           }`;
-        if (socioNaTolerancia || socioLicenciado) {
+        if (socioNaTolerancia && !socioLicenciado) {
           dependente.valido = true;
         } else {
           dependente.valido = false;
         }
       });
 
-      if (socioNaTolerancia || socioLicenciado) {
+      if (socioNaTolerancia && !socioLicenciado) {
         const condition =
           data.event === "entrada"
             ? { "fluxos.placa": data.plate }
@@ -193,7 +193,7 @@ module.exports = app => {
           return res
             .status(400)
             .send(
-              "Esta matrícula está inadimplente. Para resolver este problema, o sócio deve comparecer na secretaria"
+              "Esta matrícula está inadimplente ou licenciada. Para resolver este problema, o sócio deve comparecer na secretaria"
             );
         }
       }
@@ -231,7 +231,7 @@ module.exports = app => {
           .first();
       }
       // existsOrError(response, 'Matrícula não encontrada.')
-      if (socioNaTolerancia || socioLicenciado) {
+      if (socioNaTolerancia && !socioLicenciado) {
         return res.json({
           ...response,
           profilePicture: `http://sccp14/${registration + code}.jpg`
@@ -242,7 +242,7 @@ module.exports = app => {
           message:
             "A matrícula " +
             data +
-            " está inadimplente. Para resolver este problema, o sócio deverá comparecer na secretaria"
+            " está inadimplente ou licenciada. Para resolver este problema, o sócio deverá comparecer na secretaria"
         });
         // return res.status(400).send('Esta matrícula está inadimplente. Para resolver este problema, o sócio deverá comparecer na secretaria.')
       }
