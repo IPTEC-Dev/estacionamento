@@ -1,7 +1,7 @@
+const { toleranciaBloqueio } = require("../.env");
+
 module.exports = app => {
   const { existsOrError } = app.api.validation;
-
-  const toleranciaBloqueio = 259200000;
 
   const getRegistrationByPlate = async (req, res) => {
     const data = { ...req.params };
