@@ -116,7 +116,7 @@ module.exports = app => {
         Date.parse(new Date());
       const socioLicenciado = ["04", "08"].includes(response.situacao);
       const socioDesbloqueado = 
-        new Date(Date.parse(response.habil_clb)) > 
+        new Date(Date.parse(response.habil_clb)) < 
         Date.parse(new Date());
 
 
