@@ -336,5 +336,6 @@ app.printUsingElectron = function (data, modulo) {
     printWindow.loadURL("C:\\Estacionamento-win32-x64\\result.txt");
   }
 
-  exec("copy /B C:\\Estacionamento-win32-x64\\result.txt LPT1");
+  //exec("copy /B C:\\Estacionamento-win32-x64\\result.txt LPT1");
+  exec("print /d:RECIBOS C:\\Estacionamento-win32-x64\\result.txt");
 };
