@@ -43,6 +43,9 @@ module.exports = app => {
       response = await app
         .omni("omniclub.cadsocio")
         .select(
+          "habil_mens",
+          "situacao",
+          "habil_clb",
           app.omni.raw(
             "regexp_replace(nome, '[^a-zA-Z0-9 ]+', '', 'g') as nome"
           )
@@ -57,6 +60,8 @@ module.exports = app => {
           .omni("omniclub.caddep")
           .select(
             "habil_mens",
+            "situacao",
+            "habil_clb",
             app.omni.raw(
               "regexp_replace(nome, '[^a-zA-Z0-9 ]+', '', 'g') as nome"
             )
@@ -83,6 +88,7 @@ module.exports = app => {
         .select(
           "habil_mens",
           "situacao",
+          "habil_clb",
           app.omni.raw(
             "regexp_replace(nome, '[^a-zA-Z0-9 ]+', '', 'g') as nome"
           )
@@ -94,6 +100,8 @@ module.exports = app => {
           .omni("omniclub.caddep")
           .select(
             "habil_mens",
+            "situacao",
+            "habil_clb",
             app.omni.raw(
               "regexp_replace(nome, '[^a-zA-Z0-9 ]+', '', 'g') as nome"
             )
@@ -107,12 +115,17 @@ module.exports = app => {
         new Date(Date.parse(response.habil_mens) + toleranciaBloqueio) >
         Date.parse(new Date());
       const socioLicenciado = ["04", "08"].includes(response.situacao);
+      const socioDesbloqueado = 
+        new Date(Date.parse(response.habil_clb)) > 
+        Date.parse(new Date());
 
 
       const dependentes = await app
         .omni("omniclub.caddep")
         .select(
           "habil_mens",
+          "situacao",
+          "habil_clb",
           app.omni.raw(
             "regexp_replace(nome, '[^a-zA-Z0-9 ]+', '', 'g') as nome"
           ),
@@ -127,14 +140,14 @@ module.exports = app => {
         dependente.matricula_completa = `${data.registration}-${
           dependente.cod_dep
           }`;
-        if (socioNaTolerancia && !socioLicenciado) {
+        if (socioNaTolerancia && !socioLicenciado && socioDesbloqueado) {
           dependente.valido = true;
         } else {
           dependente.valido = false;
         }
       });
 
-      if (socioNaTolerancia && !socioLicenciado) {
+      if (socioNaTolerancia && !socioLicenciado && socioDesbloqueado) {
         const condition =
           data.event === "entrada"
             ? { "fluxos.placa": data.plate }
@@ -183,11 +196,29 @@ module.exports = app => {
 
           const newResponse = { ...response, ...isUpToDate, dependentes };
           return res.json(newResponse);
+        } else if(!socioNaTolerancia){
+          return res
+          .status(400)
+          .send(
+            "Esta matrícula está inadimplente. Para resolver este problema, o sócio deve comparecer na secretaria"
+          );
+        } else if(socioLicenciado){
+          return res
+          .status(400)
+          .send(
+            "Esta matrícula está licenciada. Para resolver este problema, o sócio deve comparecer na secretaria"
+          );
+        } else if(!socioDesbloqueado){
+          return res
+          .status(400)
+          .send(
+            "Esta matrícula está bloqueada. Para resolver este problema, o sócio deve comparecer na secretaria"
+          );
         } else {
           return res
             .status(400)
             .send(
-              "Esta matrícula está inadimplente ou licenciada. Para resolver este problema, o sócio deve comparecer na secretaria"
+              "Esta matrícula está com divergência. Para resolver este problema, o sócio deve comparecer na secretaria"
             );
         }
       }
@@ -206,6 +237,8 @@ module.exports = app => {
         .omni("omniclub.cadsocio")
         .select(
           "habil_mens",
+          "situacao",
+          "habil_clb",
           app.omni.raw(
             "regexp_replace(nome, '[^a-zA-Z0-9 ]+', '', 'g') as nome"
           )
@@ -217,6 +250,8 @@ module.exports = app => {
           .omni("omniclub.caddep")
           .select(
             "habil_mens",
+            "situacao",
+            "habil_clb",
             app.omni.raw(
               "regexp_replace(nome, '[^a-zA-Z0-9 ]+', '', 'g') as nome"
             )
@@ -225,18 +260,45 @@ module.exports = app => {
           .first();
       }
       // existsOrError(response, 'Matrícula não encontrada.')
-      if (socioNaTolerancia && !socioLicenciado) {
+      if (socioNaTolerancia && !socioLicenciado && socioDesbloqueado) {
         return res.json({
           ...response,
           profilePicture: `http://sccp14/${registration + code}.jpg`
         });
+      } else if(!socioNaTolerancia){
+        return res.json({
+          registration: data,
+          message:
+            "A matrícula " +
+            data +
+            " está inadimplente. Para resolver este problema, o sócio deverá comparecer na secretaria"
+        });
+        // return res.status(400).send('Esta matrícula está inadimplente. Para resolver este problema, o sócio deverá comparecer na secretaria.')
+      }  else if(socioLicenciado){
+        return res.json({
+          registration: data,
+          message:
+            "A matrícula " +
+            data +
+            " está licenciada. Para resolver este problema, o sócio deverá comparecer na secretaria"
+        });
+        // return res.status(400).send('Esta matrícula está inadimplente. Para resolver este problema, o sócio deverá comparecer na secretaria.')
+      }  else if(!socioDesbloqueado){
+        return res.json({
+          registration: data,
+          message:
+            "A matrícula " +
+            data +
+            " está bloqueada. Para resolver este problema, o sócio deverá comparecer na secretaria"
+        });
+        // return res.status(400).send('Esta matrícula está inadimplente. Para resolver este problema, o sócio deverá comparecer na secretaria.')
       } else {
         return res.json({
           registration: data,
           message:
             "A matrícula " +
             data +
-            " está inadimplente ou licenciada. Para resolver este problema, o sócio deverá comparecer na secretaria"
+            " está com divergência. Para resolver este problema, o sócio deverá comparecer na secretaria"
         });
         // return res.status(400).send('Esta matrícula está inadimplente. Para resolver este problema, o sócio deverá comparecer na secretaria.')
       }
