@@ -135,15 +135,7 @@
                     id="campo-matricula"
                   ></v-text-field>
                 </v-flex>
-                <v-flex xs12 sm4>
-                  <v-checkbox
-                    class="my-0 py-0"
-                    v-if="evento.evento === 'Entrada'"
-                    v-model="carro"
-                    label="Carro"
-                  ></v-checkbox>
-                </v-flex>
-                <v-flex xs12 sm4>
+                <v-flex xs12 sm6>
                   <v-checkbox
                     class="my-0 py-0"
                     v-if="evento.evento === 'Entrada'"
@@ -151,7 +143,7 @@
                     label="Moto"
                   ></v-checkbox>
                 </v-flex>
-                <v-flex xs12 sm4>
+                <v-flex xs12 sm6>
                   <v-checkbox
                     class="my-0 py-0"
                     v-if="evento.evento === 'Entrada'"
@@ -165,7 +157,7 @@
               <v-layout row wrap>
                 <v-flex xs12>
                   <v-btn
-                    :disabled="!((evento.placa && evento.matricula) && (carro || motocicleta || bicicleta))"
+                    :disabled="!evento.placa"
                     color="primary"
                     depressed
                     id="continue-1"
@@ -469,7 +461,6 @@ export default {
       },
       bicicleta: false,
       motocicleta: false,
-      carro: false,
       pagoNaEntrada: false,
       caixa: {},
       step: 0,
@@ -490,7 +481,6 @@ export default {
   watch: {
     bicicleta(newValue, oldValue) {
       if (newValue) {
-        this.carro = false
         this.motocicleta = false
         this.evento.placa = 'BICICLETA'
       } else {
@@ -499,14 +489,6 @@ export default {
     },
     motocicleta(newValue, oldValue) {
       if (newValue) {
-        this.carro = false
-        this.bicicleta = false
-        if (this.evento.placa === 'BICICLETA') this.evento.placa = ''
-      }
-    },
-    carro(newValue, oldValue) {
-      if (newValue) {
-        this.motocicleta = false
         this.bicicleta = false
         if (this.evento.placa === 'BICICLETA') this.evento.placa = ''
       }
@@ -787,7 +769,6 @@ export default {
         dataEntrada: null,
         consultado: false
       }
-      this.carro = false
       this.bicicleta = false
       this.motocicleta = false
       this.pagoNaEntrada = false
