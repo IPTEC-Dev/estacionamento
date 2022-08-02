@@ -25,6 +25,7 @@ module.exports = app => {
           "fluxos.finalizado": false,
           "fluxos.cancelado": false
         })
+        .whereNull("a.parente")
         .first();
       existsOrError(fluxo, "Este veículo não está dentro do clube");
       return res.json(fluxo);
