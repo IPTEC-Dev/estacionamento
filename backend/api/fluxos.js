@@ -85,7 +85,7 @@ module.exports = app => {
         // Se for uma entrada...
         if (dados.evento === "entrada") {
           // E o horário atual for maior que o horário limite...
-          if (new Date().getHours() < settings.horarioLimite /* && dados.local === 'P1' */) {
+          if (new Date().getHours() < settings.horarioLimite && dados.local === 'P1') {
             return res.status(204).send();
           } else {
             // Retorna-se a cobrança do valor fixo apos o horário se for carro ou o valor fixo de motocicleta se for motocicleta.
