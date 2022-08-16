@@ -91,7 +91,7 @@ module.exports = app => {
     cobranca.dataSaida = dataSaida;
     if (
       (new Date().getHours() >= settings.horarioLimite &&
-        evento === "entrada") /*|| (local !== "P1" && evento === "entrada")*/
+        evento === "entrada") || (local !== "P1" && evento === "entrada")
     ) {
       cobranca.valor += settings.aposHorarioLimite;
       cobranca.selos += 1;
