@@ -73,7 +73,7 @@
                   <v-text-field
                     prefix="R$"
                     v-model.number="settings.aposHorarioLimite"
-                    label="Preço fixo após o horário limite"
+                    label="Preço fixo após o horário limite/Valores P3 e Tamboréu"
                     :rules="defaultRules"
                     type="number"
                     min="0"
