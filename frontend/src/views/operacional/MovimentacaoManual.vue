@@ -135,7 +135,15 @@
                     id="campo-matricula"
                   ></v-text-field>
                 </v-flex>
-                <v-flex xs12 sm6>
+                <v-flex xs12 sm4>
+                  <v-checkbox
+                    class="my-0 py-0"
+                    v-if="evento.evento === 'Entrada'"
+                    v-model="carro"
+                    label="Carro"
+                  ></v-checkbox>
+                </v-flex>
+                <v-flex xs12 sm4>
                   <v-checkbox
                     class="my-0 py-0"
                     v-if="evento.evento === 'Entrada'"
@@ -143,7 +151,7 @@
                     label="Moto"
                   ></v-checkbox>
                 </v-flex>
-                <v-flex xs12 sm6>
+                <v-flex xs12 sm4>
                   <v-checkbox
                     class="my-0 py-0"
                     v-if="evento.evento === 'Entrada'"
@@ -156,13 +164,24 @@
               <v-divider class="mb-2"></v-divider>
               <v-layout row wrap>
                 <v-flex xs12>
-                  <v-btn
-                    :disabled="!evento.placa"
-                    color="primary"
-                    depressed
-                    id="continue-1"
-                    @click="next"
-                  >Continuar</v-btn>
+                  <span v-if="evento.evento === 'Saída'">
+                    <v-btn
+                      :disabled="!evento.placa"
+                      color="primary"
+                      depressed
+                      id="continue-1"
+                      @click="next"
+                    >Continuar</v-btn>
+                  </span>
+                  <span v-else>
+                    <v-btn
+                      :disabled="!((evento.placa && evento.matricula) && (carro || motocicleta || bicicleta))"
+                      color="primary"
+                      depressed
+                      id="continue-1"
+                      @click="next"
+                    >Continuar</v-btn>
+                  </span>
                   <v-btn
                     :disabled="!evento.placa"
                     color="primary"
@@ -286,10 +305,10 @@
               </v-layout>
               <v-layout row wrap>
                 <v-flex xs12 sm3 v-for="dependente in evento.dependentes" :key="dependente.cod_dep">
-                  <v-card>
+                  <v-card :class="(fotosInvalidas[dependente.foto]) ? 'error' : ''">
                     <v-layout>
                       <v-flex xs6 sm5>
-                        <v-img :src="dependente.foto" contain></v-img>
+                        <v-img :src="dependente.foto" @error="onDependenteFotoError" contain></v-img>
                         <div v-if="!dependente.valido" class="overlay">
                           <div class="text">Inadimplente</div>
                         </div>
@@ -435,12 +454,12 @@
 import GlobalEvents from 'vue-global-events'
 import SegundaVia from '@/components/inicio/SegundaVia'
 import { mapGetters } from 'vuex'
-
 export default {
   name: 'MovimentacaoManual',
   components: { SegundaVia, GlobalEvents },
   data() {
     return {
+      fotosInvalidas: {},
       registrationVerification: '',
       saldoSelosDigitais: {
         normalCarro: 0,
@@ -461,6 +480,7 @@ export default {
       },
       bicicleta: false,
       motocicleta: false,
+      carro: false,
       pagoNaEntrada: false,
       caixa: {},
       step: 0,
@@ -481,6 +501,7 @@ export default {
   watch: {
     bicicleta(newValue, oldValue) {
       if (newValue) {
+        this.carro = false
         this.motocicleta = false
         this.evento.placa = 'BICICLETA'
       } else {
@@ -489,6 +510,14 @@ export default {
     },
     motocicleta(newValue, oldValue) {
       if (newValue) {
+        this.carro = false
+        this.bicicleta = false
+        if (this.evento.placa === 'BICICLETA') this.evento.placa = ''
+      }
+    },
+    carro(newValue, oldValue) {
+      if (newValue) {
+        this.motocicleta = false
         this.bicicleta = false
         if (this.evento.placa === 'BICICLETA') this.evento.placa = ''
       }
@@ -500,14 +529,11 @@ export default {
   },
   created() {
     const self = this
-
     this.loadLastCashbox()
     this.loadPrices()
-
     document.addEventListener('message', function(data) {
       const result = data.data
       const formatedData = `!${result}*`
-
       for (let index = 0; index < formatedData.length; index++) {
         self.readRegistration({ key: formatedData[index] })
       }
@@ -552,7 +578,6 @@ export default {
             this.charactersFromReader = []
           }
         }
-
         if (
           event.key !== 'Shift' &&
           event.key !== 'Enter' &&
@@ -562,7 +587,6 @@ export default {
             key: event.key
           })
         }
-
         if (event.key === '*') {
           this.formatCharactersFromReader()
         }
@@ -575,9 +599,7 @@ export default {
           formatedRegistration += this.charactersFromReader[index].key
         }
       }
-
       formatedRegistration = formatedRegistration.replace('undefined', '')
-
       if (formatedRegistration.length > 8) {
         formatedRegistration = formatedRegistration.substring(
           formatedRegistration.length - 8,
@@ -589,7 +611,6 @@ export default {
           formatedRegistration.length
         )
       }
-
       if (this.step === 2 && this.evento.evento === 'Entrada') {
         this.evento.matricula = formatedRegistration
         this.bicicleta = !this.bicicleta
@@ -756,6 +777,10 @@ export default {
       this.evento.evento = evento
       this.step = 2
     },
+    onDependenteFotoError(photoSrc) {
+      this.fotosInvalidas[photoSrc] = true;
+      this.$forceUpdate();
+    },
     reset(force = false) {
       this.registrationVerification = ''
       this.charactersFromReader = []
@@ -769,6 +794,7 @@ export default {
         dataEntrada: null,
         consultado: false
       }
+      this.carro = false
       this.bicicleta = false
       this.motocicleta = false
       this.pagoNaEntrada = false
@@ -907,7 +933,6 @@ export default {
                                 ...this.evento,
                                 precos: { ...this.precos }
                               })
-
                               if (this.pagoNaEntrada) {
                               setTimeout(() => {
                                 window.sendToElectron({
@@ -1006,7 +1031,6 @@ export default {
                             ...this.evento,
                             precos: { ...this.precos }
                           })
-
                           if (this.pagoNaEntrada) {
                             setTimeout(() => {
                               window.sendToElectron({
@@ -1140,7 +1164,6 @@ export default {
                           ...this.evento,
                           precos: { ...this.precos }
                         })
-
                         if (this.pagoNaEntrada) {
                           setTimeout(() => {
                             window.sendToElectron({
@@ -1241,7 +1264,6 @@ export default {
                       ...this.evento,
                       precos: { ...this.precos }
                     })
-
                     if (this.pagoNaEntrada) {
                       setTimeout(() => {
                         window.sendToElectron({
@@ -1623,10 +1645,8 @@ export default {
             }
             if (this.evento.matricula) {
               var element = document.getElementById("loading_area");
-
               element.classList.remove("deactive");
               element.classList.add("active");
-
               this.requestingToApi = true
               this.$api
                 .post('omni', {
@@ -1637,10 +1657,8 @@ export default {
                 })
                 .then(res => {
                   var element = document.getElementById("loading_area");
-
                   element.classList.remove("active");
                   element.classList.add("deactive");
-
                   this.evento.nome = res.data.nome
                   this.evento.tipo = 'Sócio'
                   this.evento.identry = res.data.identry
@@ -1678,7 +1696,6 @@ export default {
                     text: err.response.data,
                     color: 'error'
                   })
-
                   var element = document.getElementById("loading_area");
                   element.classList.remove("active");
                   element.classList.add("deactive");
@@ -1822,6 +1839,7 @@ export default {
           break
         case 3:
           if (!this.requestingToApi) this.done()
+          this.step = 1;
           break
       }
     }
@@ -1859,12 +1877,9 @@ export default {
   top: -24px;
   position: relative;
 }
-
 #loading_area.deactive {
   display: none;
 }
-
-
 #loading_area.active{
     position: absolute;
     top: 0;
