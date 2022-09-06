@@ -175,7 +175,7 @@
                   </span>
                   <span v-else>
                     <v-btn
-                      :disabled="!((evento.placa) && (carro || motocicleta || bicicleta))"
+                      :disabled="!((evento.placa && evento.matricula) && (carro || motocicleta || bicicleta))"
                       color="primary"
                       depressed
                       id="continue-1"
