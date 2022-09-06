@@ -164,6 +164,16 @@
               <v-divider class="mb-2"></v-divider>
               <v-layout row wrap>
                 <v-flex xs12>
+                  <span v-if="evento.evento === 'Saída'">
+                    <v-btn
+                      :disabled="!evento.placa"
+                      color="primary"
+                      depressed
+                      id="continue-1"
+                      @click="next"
+                    >Continuar</v-btn>
+                  </span>
+                  <span v-else>
                     <v-btn
                       :disabled="!((evento.placa) && (carro || motocicleta || bicicleta))"
                       color="primary"
@@ -171,6 +181,7 @@
                       id="continue-1"
                       @click="next"
                     >Continuar</v-btn>
+                  </span>
                   <v-btn
                     :disabled="!evento.placa"
                     color="primary"
