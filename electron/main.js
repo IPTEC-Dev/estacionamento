@@ -39,26 +39,32 @@ app.on("activate", function () {
 
 function formatDate(value) {
   if (value) {
-    Number.prototype.padLeft = function (base, chr) {
-      var len = String(base || 10).length - String(this).length + 1;
-      return len > 0 ? new Array(len).join(chr || "0") + this : this;
-    };
-    var d = new Date(value),
-      dformat =
-        [
-          d.getDate().padLeft(),
-          (d.getMonth() + 1).padLeft(),
-          d.getFullYear()
-        ].join("/") +
-        " AS " +
-        [
-          d.getHours().padLeft(),
-          d.getMinutes().padLeft(),
-          d.getSeconds().padLeft()
-        ].join(":");
+    var d = new Date(value);
+
+    // Diminuir uma hora
+    d.setHours(d.getHours() - 1);
+
+    // Função para adicionar zero à esquerda
+    function padLeft(value, length = 2) {
+      return String(value).padStart(length, '0');
+    }
+
+    var dformat =
+      [
+        padLeft(d.getDate()),
+        padLeft(d.getMonth() + 1),
+        d.getFullYear()
+      ].join("/") +
+      " AS " +
+      [
+        padLeft(d.getHours()),
+        padLeft(d.getMinutes()),
+        padLeft(d.getSeconds())
+      ].join(":");
     return dformat;
   }
 }
+
 
 function formatPrice(value) {
   return "R$ " + value.toFixed(2).replace(".", ",");
