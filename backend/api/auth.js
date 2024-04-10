@@ -9,7 +9,7 @@ module.exports = app => {
       url: 'ldap://sccp59.sccorinthians.com.br',
       baseDN: 'DC=sccorinthians,DC=com,DC=br',
       username: 'svc_autenticacao_ad',
-      password: '@ut3nTIC#' 
+      password: '@ut3nTIC#'
     };
     const ad = new ActiveDirectory(activeDirectorySettings);
     const user = {
@@ -18,7 +18,7 @@ module.exports = app => {
       local: req.body.local,
       role: null
     };
-
+    console.log('Login')
     try {
       existsOrError(user.username, "Informe seu usuário");
       existsOrError(user.password, "Informe sua senha");
@@ -75,7 +75,7 @@ module.exports = app => {
           (error, auth) => {
             if (error) return reject("Dados de acesso inválidos");
             if (auth) {
-              ad.findUser(user.username, function(error, userFromAd) {
+              ad.findUser(user.username, function (error, userFromAd) {
                 if (error) return reject(error);
                 existsOrError(userFromAd, "Dados de acesso inválidos");
                 const now = Math.floor(Date.now() / 1000);

@@ -16,7 +16,7 @@ function createWindow() {
     icon: path.join(__dirname, "estacionamento.ico")
   });
 
-  mainWindow.loadURL("https://estacionamento.sccorinthians.com.br");
+  mainWindow.loadURL("http://localhost:8080");
 
   mainWindow.on("closed", function () {
     mainWindow = null;
@@ -188,103 +188,91 @@ app.printUsingElectron = function (data, modulo) {
           text += "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n";
           text += " \n";
           text += "=-=-=-=-=-=-=-=-= ARRECADACAO -=-=-=-=-=-=-=-=-=\n";
-          text += `-= TOTAL DINHEIRO:         ${formatPrice(data.arrecadacao.avulsosEntrada.dinheiro.total[0]["sum(`fluxos`.`valor`)"] + data.arrecadacao.avulsosSaida.dinheiro.total[0]["sum(`fluxos`.`valor`)"])}\n`;
-          text += `-=    P1:                  ${formatPrice(data.arrecadacao.avulsosEntrada.dinheiro.p1[0]["sum(`fluxos`.`valor`)"] + data.arrecadacao.avulsosSaida.dinheiro.p1[0]["sum(`fluxos`.`valor`)"])}\n`;
-          text += `-=    P3:                  ${formatPrice(data.arrecadacao.avulsosEntrada.dinheiro.p3[0]["sum(`fluxos`.`valor`)"] + data.arrecadacao.avulsosSaida.dinheiro.p3[0]["sum(`fluxos`.`valor`)"])}\n`;
-          text += `-=    TAMBOREU:            ${formatPrice(data.arrecadacao.avulsosEntrada.dinheiro.tamboreu[0]["sum(`fluxos`.`valor`)"] + data.arrecadacao.avulsosSaida.dinheiro.tamboreu[0]["sum(`fluxos`.`valor`)"])}\n`;
-          text += `-= TOTAL CARTAO:           ${
-            formatPrice(
-              data.arrecadacao.avulsosEntrada.cartaoDebito.total[0]["sum(`fluxos`.`valor`)"] +
-              data.arrecadacao.avulsosSaida.cartaoDebito.total[0]["sum(`fluxos`.`valor`)"] +
-              data.arrecadacao.avulsosEntrada.cartaoCredito.total[0]["sum(`fluxos`.`valor`)"] +
-              data.arrecadacao.avulsosSaida.cartaoCredito.total[0]["sum(`fluxos`.`valor`)"] +
-              data.arrecadacao.avulsosCartao.total[0]["sum(`fluxos`.`valor`)"]
-            )
+          text += `-= TOTAL DINHEIRO:         ${formatPrice(data.arrecadacao.avulsosEntrada.dinheiro.total + data.arrecadacao.avulsosSaida.dinheiro.total)}\n`;
+          text += `-=    P1:                  ${formatPrice(data.arrecadacao.avulsosEntrada.dinheiro.p1 + data.arrecadacao.avulsosSaida.dinheiro.p1)}\n`;
+          text += `-=    P3:                  ${formatPrice(data.arrecadacao.avulsosEntrada.dinheiro.p3 + data.arrecadacao.avulsosSaida.dinheiro.p3)}\n`;
+          text += `-=    TAMBOREU:            ${formatPrice(data.arrecadacao.avulsosEntrada.dinheiro.tamboreu + data.arrecadacao.avulsosSaida.dinheiro.tamboreu)}\n`;
+          text += `-= TOTAL CARTAO:           ${formatPrice(
+            data.arrecadacao.avulsosEntrada.cartaoDebito.total +
+            data.arrecadacao.avulsosSaida.cartaoDebito.total +
+            data.arrecadacao.avulsosEntrada.cartaoCredito.total +
+            data.arrecadacao.avulsosSaida.cartaoCredito.total +
+            data.arrecadacao.avulsosCartao.total
+          )
             }\n`;
-          text += `-=    P1:                  ${
-            formatPrice(
-              data.arrecadacao.avulsosEntrada.cartaoDebito.p1[0]["sum(`fluxos`.`valor`)"] +
-              data.arrecadacao.avulsosSaida.cartaoDebito.p1[0]["sum(`fluxos`.`valor`)"] +
-              data.arrecadacao.avulsosEntrada.cartaoCredito.p1[0]["sum(`fluxos`.`valor`)"] +
-              data.arrecadacao.avulsosSaida.cartaoCredito.p1[0]["sum(`fluxos`.`valor`)"] +
-              data.arrecadacao.avulsosCartao.p1[0]["sum(`fluxos`.`valor`)"]
-            )
+          text += `-=    P1:                  ${formatPrice(
+            data.arrecadacao.avulsosEntrada.cartaoDebito.p1 +
+            data.arrecadacao.avulsosSaida.cartaoDebito.p1 +
+            data.arrecadacao.avulsosEntrada.cartaoCredito.p1 +
+            data.arrecadacao.avulsosSaida.cartaoCredito.p1 +
+            data.arrecadacao.avulsosCartao.p1
+          )
             }\n`;
-          text += `-=    P3:                  ${
-            formatPrice(
-              data.arrecadacao.avulsosEntrada.cartaoDebito.p3[0]["sum(`fluxos`.`valor`)"] +
-              data.arrecadacao.avulsosSaida.cartaoDebito.p3[0]["sum(`fluxos`.`valor`)"] +
-              data.arrecadacao.avulsosEntrada.cartaoCredito.p3[0]["sum(`fluxos`.`valor`)"] +
-              data.arrecadacao.avulsosSaida.cartaoCredito.p3[0]["sum(`fluxos`.`valor`)"] +
-              data.arrecadacao.avulsosCartao.p3[0]["sum(`fluxos`.`valor`)"]
-            )
+          text += `-=    P3:                  ${formatPrice(
+            data.arrecadacao.avulsosEntrada.cartaoDebito.p3 +
+            data.arrecadacao.avulsosSaida.cartaoDebito.p3 +
+            data.arrecadacao.avulsosEntrada.cartaoCredito.p3 +
+            data.arrecadacao.avulsosSaida.cartaoCredito.p3 +
+            data.arrecadacao.avulsosCartao.p3
+          )
             }\n`;
-          text += `-=    TAMBOREU:            ${
-            formatPrice(
-              data.arrecadacao.avulsosEntrada.cartaoDebito.tamboreu[0]["sum(`fluxos`.`valor`)"] +
-              data.arrecadacao.avulsosSaida.cartaoDebito.tamboreu[0]["sum(`fluxos`.`valor`)"] +
-              data.arrecadacao.avulsosEntrada.cartaoCredito.tamboreu[0]["sum(`fluxos`.`valor`)"] +
-              data.arrecadacao.avulsosSaida.cartaoCredito.tamboreu[0]["sum(`fluxos`.`valor`)"] +
-              data.arrecadacao.avulsosCartao.tamboreu[0]["sum(`fluxos`.`valor`)"]
-            )
+          text += `-=    TAMBOREU:            ${formatPrice(
+            data.arrecadacao.avulsosEntrada.cartaoDebito.tamboreu +
+            data.arrecadacao.avulsosSaida.cartaoDebito.tamboreu +
+            data.arrecadacao.avulsosEntrada.cartaoCredito.tamboreu +
+            data.arrecadacao.avulsosSaida.cartaoCredito.tamboreu +
+            data.arrecadacao.avulsosCartao.tamboreu
+          )
             }\n`;
-          text += `-=       TOTAL DEBITO:     ${
-            formatPrice(
-              data.arrecadacao.avulsosEntrada.cartaoDebito.total[0]["sum(`fluxos`.`valor`)"] +
-              data.arrecadacao.avulsosSaida.cartaoDebito.total[0]["sum(`fluxos`.`valor`)"]
-            )
+          text += `-=       TOTAL DEBITO:     ${formatPrice(
+            data.arrecadacao.avulsosEntrada.cartaoDebito.total +
+            data.arrecadacao.avulsosSaida.cartaoDebito.total
+          )
             }\n`;
-          text += `-=          P1:            ${
-            formatPrice(
-              data.arrecadacao.avulsosEntrada.cartaoDebito.p1[0]["sum(`fluxos`.`valor`)"] +
-              data.arrecadacao.avulsosSaida.cartaoDebito.p1[0]["sum(`fluxos`.`valor`)"]
-            )
+          text += `-=          P1:            ${formatPrice(
+            data.arrecadacao.avulsosEntrada.cartaoDebito.p1 +
+            data.arrecadacao.avulsosSaida.cartaoDebito.p1
+          )
             }\n`;
-          text += `-=          P3:            ${
-            formatPrice(
-              data.arrecadacao.avulsosEntrada.cartaoDebito.p3[0]["sum(`fluxos`.`valor`)"] +
-              data.arrecadacao.avulsosSaida.cartaoDebito.p3[0]["sum(`fluxos`.`valor`)"]
-            )
+          text += `-=          P3:            ${formatPrice(
+            data.arrecadacao.avulsosEntrada.cartaoDebito.p3 +
+            data.arrecadacao.avulsosSaida.cartaoDebito.p3
+          )
             }\n`;
-          text += `-=          TAMBOREU:      ${
-            formatPrice(
-              data.arrecadacao.avulsosEntrada.cartaoDebito.tamboreu[0]["sum(`fluxos`.`valor`)"] +
-              data.arrecadacao.avulsosSaida.cartaoDebito.tamboreu[0]["sum(`fluxos`.`valor`)"]
-            )
+          text += `-=          TAMBOREU:      ${formatPrice(
+            data.arrecadacao.avulsosEntrada.cartaoDebito.tamboreu +
+            data.arrecadacao.avulsosSaida.cartaoDebito.tamboreu
+          )
             }\n`;
-          text += `-=       TOTAL CREDITO:    ${
-            formatPrice(data.arrecadacao.avulsosEntrada.cartaoCredito.total[0]["sum(`fluxos`.`valor`)"] + data.arrecadacao.avulsosSaida.cartaoCredito.total[0]["sum(`fluxos`.`valor`)"])
+          text += `-=       TOTAL CREDITO:    ${formatPrice(data.arrecadacao.avulsosEntrada.cartaoCredito.total + data.arrecadacao.avulsosSaida.cartaoCredito.total)
             }\n`;
-          text += `-=          P1:            ${
-            formatPrice(
-              data.arrecadacao.avulsosEntrada.cartaoCredito.p1[0]["sum(`fluxos`.`valor`)"] +
-              data.arrecadacao.avulsosSaida.cartaoCredito.p1[0]["sum(`fluxos`.`valor`)"]
-            )
+          text += `-=          P1:            ${formatPrice(
+            data.arrecadacao.avulsosEntrada.cartaoCredito.p1 +
+            data.arrecadacao.avulsosSaida.cartaoCredito.p1
+          )
             }\n`;
-          text += `-=          P3:            ${
-            formatPrice(
-              data.arrecadacao.avulsosEntrada.cartaoCredito.p3[0]["sum(`fluxos`.`valor`)"] +
-              data.arrecadacao.avulsosSaida.cartaoCredito.p3[0]["sum(`fluxos`.`valor`)"]
-            )
+          text += `-=          P3:            ${formatPrice(
+            data.arrecadacao.avulsosEntrada.cartaoCredito.p3 +
+            data.arrecadacao.avulsosSaida.cartaoCredito.p3
+          )
             }\n`;
-          text += `-=          TAMBOREU:      ${
-            formatPrice(
-              data.arrecadacao.avulsosEntrada.cartaoCredito.tamboreu[0]["sum(`fluxos`.`valor`)"] +
-              data.arrecadacao.avulsosSaida.cartaoCredito.tamboreu[0]["sum(`fluxos`.`valor`)"]
-            )
+          text += `-=          TAMBOREU:      ${formatPrice(
+            data.arrecadacao.avulsosEntrada.cartaoCredito.tamboreu +
+            data.arrecadacao.avulsosSaida.cartaoCredito.tamboreu
+          )
             }\n`;
-          text += `-= TOTAL SELOS:            ${data.arrecadacao.selosQtd.selosFisicos.total[0]["sum(`fluxos`.`valor`)"] + data.arrecadacao.selosQtd.selosDigitais.total[0]["sum(`fluxos`.`valor`)"] || 0}\n`;
-          text += `-=    P1:                  ${data.arrecadacao.selosQtd.selosFisicos.p1[0]["sum(`fluxos`.`valor`)"] + data.arrecadacao.selosQtd.selosDigitais.p1[0]["sum(`fluxos`.`valor`)"] || 0}\n`;
-          text += `-=    P3:                  ${data.arrecadacao.selosQtd.selosFisicos.p3[0]["sum(`fluxos`.`valor`)"] + data.arrecadacao.selosQtd.selosDigitais.p3[0]["sum(`fluxos`.`valor`)"] || 0}\n`;
-          text += `-=    TAMBOREU:            ${data.arrecadacao.selosQtd.selosFisicos.tamboreu[0]["sum(`fluxos`.`valor`)"] + data.arrecadacao.selosQtd.selosDigitais.tamboreu[0]["sum(`fluxos`.`valor`)"] || 0}\n`;
-          text += `-=       TOTAL DIGITAIS:   ${data.arrecadacao.selosQtd.selosDigitais.total[0]["sum(`fluxos`.`valor`)"] || 0}\n`;
-          text += `-=          P1:            ${data.arrecadacao.selosQtd.selosDigitais.p1[0]["sum(`fluxos`.`valor`)"] || 0}\n`;
-          text += `-=          P3:            ${data.arrecadacao.selosQtd.selosDigitais.p3[0]["sum(`fluxos`.`valor`)"] || 0}\n`;
-          text += `-=          TAMBOREU:      ${data.arrecadacao.selosQtd.selosDigitais.tamboreu[0]["sum(`fluxos`.`valor`)"] || 0}\n`;
-          text += `-=       TOTAL FISICOS:    ${data.arrecadacao.selosQtd.selosFisicos.total[0]["sum(`fluxos`.`valor`)"] || 0}\n`;
-          text += `-=          P1:            ${data.arrecadacao.selosQtd.selosFisicos.p1[0]["sum(`fluxos`.`valor`)"] || 0}\n`;
-          text += `-=          P3:            ${data.arrecadacao.selosQtd.selosFisicos.p3[0]["sum(`fluxos`.`valor`)"] || 0}\n`;
-          text += `-=          TAMBOREU:      ${data.arrecadacao.selosQtd.selosFisicos.tamboreu[0]["sum(`fluxos`.`valor`)"] || 0}\n`;
+          text += `-= TOTAL SELOS:            ${data.arrecadacao.selosQtd.selosFisicos.total + data.arrecadacao.selosQtd.selosDigitais.total || 0}\n`;
+          text += `-=    P1:                  ${data.arrecadacao.selosQtd.selosFisicos.p1 + data.arrecadacao.selosQtd.selosDigitais.p1 || 0}\n`;
+          text += `-=    P3:                  ${data.arrecadacao.selosQtd.selosFisicos.p3 + data.arrecadacao.selosQtd.selosDigitais.p3 || 0}\n`;
+          text += `-=    TAMBOREU:            ${data.arrecadacao.selosQtd.selosFisicos.tamboreu + data.arrecadacao.selosQtd.selosDigitais.tamboreu || 0}\n`;
+          text += `-=       TOTAL DIGITAIS:   ${data.arrecadacao.selosQtd.selosDigitais.total || 0}\n`;
+          text += `-=          P1:            ${data.arrecadacao.selosQtd.selosDigitais.p1 || 0}\n`;
+          text += `-=          P3:            ${data.arrecadacao.selosQtd.selosDigitais.p3 || 0}\n`;
+          text += `-=          TAMBOREU:      ${data.arrecadacao.selosQtd.selosDigitais.tamboreu || 0}\n`;
+          text += `-=       TOTAL FISICOS:    ${data.arrecadacao.selosQtd.selosFisicos.total || 0}\n`;
+          text += `-=          P1:            ${data.arrecadacao.selosQtd.selosFisicos.p1 || 0}\n`;
+          text += `-=          P3:            ${data.arrecadacao.selosQtd.selosFisicos.p3 || 0}\n`;
+          text += `-=          TAMBOREU:      ${data.arrecadacao.selosQtd.selosFisicos.tamboreu || 0}\n`;
           text += "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n\n";
           break;
         case "hc":
@@ -320,6 +308,7 @@ app.printUsingElectron = function (data, modulo) {
 
   text += "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n";
   text += "SPORT CLUB CORINTHIANS PAULISTA\n";
+
   text += "PARQUE SAO JORGE, SAO PAULO - SP, 03086-035\n";
   text += "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n\n\n\n\n\n\n\n";
 
