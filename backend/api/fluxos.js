@@ -92,10 +92,11 @@ module.exports = app => {
             const cobranca = {
               valor:
                 dados.porte === "Motocicleta"
-                  ? settings.motocicleta
+                  ? settings.motocicleta 
                   : settings.aposHorarioLimite,
               selos: 1
             };
+           
             return res.json(cobranca);
           }
         } else {
@@ -169,7 +170,12 @@ module.exports = app => {
           dados.evento,
           dados.local
         );
-
+        if(dados.porte == 'Motocicleta'){
+          cobranca.valor -= 2;
+          console.log(cobranca);
+          return res.json(cobranca);
+        }
+        
         return res.json(cobranca);
       } else {
         // Se for uma saída, calcula o valor a ser cobrado desde sua entrada até sua saída, que é o horário atual
@@ -181,6 +187,7 @@ module.exports = app => {
           dados.evento,
           dados.local
         );
+      
         return res.json(cobranca);
       }
     } catch (error) {
